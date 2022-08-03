@@ -13,9 +13,9 @@ def run_cmd_telnet_nokia(p_host, p_user, p_pwd, p_cmd, p_end_marker):
 		#resp = telnet.set_debuglevel(1000)
 		telnet.read_until("Login: ", 5)
 		telnet.write(user + '\r')
-                telnet.read_until("Password: ", 5)
+		telnet.read_until("Password: ", 5)
 		telnet.write(password + '\r')
-                telnet.read_until(p_end_marker, 5)
+		telnet.read_until(p_end_marker, 5)
 		telnet.write("environment no more"+ "\r\n")
 		telnet.read_until(p_end_marker, 15)
 		time.sleep(5)
@@ -37,7 +37,7 @@ def run_cmd_telnet_nokia(p_host, p_user, p_pwd, p_cmd, p_end_marker):
 def run_cmd_telnet_eltex(p_host, p_user, p_pwd, p_cmd):
 	resp = ''
 	try:
-                
+
 		telnet = telnetlib.Telnet(p_host, 23, 50)
 		#telnet.set_debuglevel(1000)
 		telnet.read_until("User Name:", 5)
@@ -69,7 +69,7 @@ def run_cmd_telnet_cisco(p_host, p_user, p_pwd, p_cmd):
 		telnet.write(user + '\r')
 		telnet.read_until("assword: ", 5)
 		telnet.write(password + '\r')
-                time.sleep(3)
+		time.sleep(3)
 		telnet.write("term length 0"+ "\r\n")
 		telnet.write(p_cmd+ "\r\n")
 		telnet.write('exit' '\r\n')
@@ -140,7 +140,7 @@ def print_result(p_f_name, p_keys_list, p_dict_list, is_screen=False):
 def get_result(p_f_name, is_screen=False):
 	ret = []
 	keys = []
-   
+
 	f = open(p_f_name)
 	i = 0
 	for line in f:

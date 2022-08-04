@@ -4,6 +4,26 @@ import subprocess
 import traceback
 import telnetlib
 import time
+import paramiko
+
+def run_cmd_ssh(p_host, p_user, p_pwd, p_cmd):
+	try:
+		ssh = paramiko.SSHClient()
+		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+		ssh.connect(p_host, username=p_user, password=p_pwd, look_for_keys=False, timeout=5)
+		stdin, stdout, stderr = ssh.exec_command(p_cmd)
+		resp = stdout.read()
+		return resp
+	except Exception:
+		#print 'telnet error '
+		traceback.print_exc()
+		return ''
+
+def run_cmd_nokia(p_host, p_user, p_pwd, p_cmd, p_end_marker, mode):
+	if(mode == 'telnet'):
+		return run_cmd_telnet_nokia(p_host, p_user, p_pwd, p_cmd, p_end_marker)
+	if(mode == 'ssh'):
+		return run_cmd_ssh(p_host, p_user, p_pwd, p_cmd)
 
 def run_cmd_telnet_nokia(p_host, p_user, p_pwd, p_cmd, p_end_marker):
 	try:
@@ -34,30 +54,11 @@ def run_cmd_telnet_nokia(p_host, p_user, p_pwd, p_cmd, p_end_marker):
 		return ''
 
 
-def run_cmd_telnet_eltex(p_host, p_user, p_pwd, p_cmd):
-	resp = ''
-	try:
-
-		telnet = telnetlib.Telnet(p_host, 23, 50)
-		#telnet.set_debuglevel(1000)
-		telnet.read_until("User Name:", 5)
-		telnet.write(p_user + '\r')
-		telnet.read_until("Password: ", 5)
-		telnet.write(p_pwd + '\r')
-		time.sleep(3)
-		telnet.write(p_cmd+ "\r\n")
-		time.sleep(1)
-		telnet.write("a"+ "\r\n")
-		telnet.write("exit"+ "\r\n")
-
-		resp = telnet.read_all()
-		return resp
-	except Exception:
-		#print 'telnet error on ' + p_host
-		traceback.print_exc()
-		return resp
-
-
+def run_cmd_cisco(p_host, p_user, p_pwd, p_cmd, mode):
+	if(mode == 'telnet'):
+		return run_cmd_telnet_cisco(p_host, p_user, p_pwd, p_cmd)
+	if(mode == 'ssh'):
+		return run_cmd_ssh(p_host, p_user, p_pwd, p_cmd)
 
 def run_cmd_telnet_cisco(p_host, p_user, p_pwd, p_cmd):
 	try:
@@ -80,6 +81,12 @@ def run_cmd_telnet_cisco(p_host, p_user, p_pwd, p_cmd):
 		#print 'telnet error '
 		traceback.print_exc()
 		return ''
+
+def run_cmd_juniper(p_host, p_user, p_pwd, p_cmd, mode):
+	if(mode == 'telnet'):
+		return run_cmd_telnet_juniper(p_host, p_user, p_pwd, p_cmd)
+	if(mode == 'ssh'):
+		return run_cmd_ssh(p_host, p_user, p_pwd, p_cmd)
 
 def run_cmd_telnet_juniper(p_host, p_user, p_pwd, p_cmd):
 	try:

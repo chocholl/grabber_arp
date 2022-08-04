@@ -20,10 +20,11 @@ def _proc_cisco(v):
 	global dev_ip
 	global g_user
 	global g_pwd
+	global dev_mode
 	ret = []
 
 	print(vprn_dict[v])
-	cmd_out = lib.run_cmd_telnet_cisco(dev_ip, g_user, g_pwd, 'show ip arp vrf ' + v )
+	cmd_out = lib.run_cmd_cisco(dev_ip, g_user, g_pwd, 'show ip arp vrf ' + v, dev_mode)
 	now = datetime.datetime.now()
 	if(cmd_out==''):
 		print('no data')
@@ -55,10 +56,11 @@ def _proc_nk(v):
 	global dev_ip
 	global g_user
 	global g_pwd
+	global dev_mode
 	ret = []
 
 	print(vprn_dict[v])
-	cmd_out = lib.run_cmd_telnet_nokia(dev_ip, g_user, g_pwd, 'show service id ' + v + ' arp', '#')
+	cmd_out = lib.run_cmd_nokia(dev_ip, g_user, g_pwd, 'show service id ' + v + ' arp', '#', dev_mode)
 	now = datetime.datetime.now()
 	if(cmd_out==''):
 		print('no data')
@@ -97,12 +99,13 @@ if __name__ == '__main__':
 	for d in dev_list:
 		dev_name = d['name']
 		dev_ip = d['ip']
+		dev_mode = d['mode']
 		print(d)
 		cmd_out = ''
 		o_file_name = 'mac'
 			
 		if (d['vendor']=='juniper' and 'mx' in d['model']):
-			cmd_out = lib.run_cmd_telnet_juniper(d['ip'], g_user, g_pwd, 'show configuration routing-instances | display set | match "instance-type vrf"')
+			cmd_out = lib.run_cmd_juniper(d['ip'], g_user, g_pwd, 'show configuration routing-instances | display set | match "instance-type vrf"', dev_mode)
 			if(cmd_out==''):
 				print('no data')
 				sys.exit()
@@ -114,7 +117,7 @@ if __name__ == '__main__':
 
 			
 			vrf_int_dict = {}
-			cmd_out = lib.run_cmd_telnet_juniper(d['ip'], g_user, g_pwd, 'show configuration routing-instances | display set | match "interface"')
+			cmd_out = lib.run_cmd_juniper(d['ip'], g_user, g_pwd, 'show configuration routing-instances | display set | match "interface"', dev_mode)
 			if(cmd_out==''):
 				print('no data')
 				sys.exit()
@@ -133,7 +136,7 @@ if __name__ == '__main__':
 			int_list_inner_dict = {}
 			int_list_vlanid_dict = {}
 			
-			cmd_out = lib.run_cmd_telnet_juniper(d['ip'], g_user, g_pwd, 'show configuration interfaces | display set | match "vlan-tags"')
+			cmd_out = lib.run_cmd_juniper(d['ip'], g_user, g_pwd, 'show configuration interfaces | display set | match "vlan-tags"', dev_mode)
 			if(cmd_out==''):
 				print('no data')
 				sys.exit()
@@ -152,7 +155,7 @@ if __name__ == '__main__':
 						c_tag = c.split(' ')[7]
 						int_list_inner_dict[c_int + '.' + c_unit] = c_tag
 
-			cmd_out = lib.run_cmd_telnet_juniper(d['ip'], g_user, g_pwd, 'show configuration interfaces | display set | match "vlan-id"')
+			cmd_out = lib.run_cmd_juniper(d['ip'], g_user, g_pwd, 'show configuration interfaces | display set | match "vlan-id"', dev_mode)
 			if(cmd_out==''):
 				print('no data')
 				sys.exit()
@@ -167,7 +170,7 @@ if __name__ == '__main__':
 
 			
 			arp_list = []
-			cmd_out = lib.run_cmd_telnet_juniper(d['ip'], g_user, g_pwd, 'show arp no-resolve expiration-time')
+			cmd_out = lib.run_cmd_juniper(d['ip'], g_user, g_pwd, 'show arp no-resolve expiration-time', dev_mode)
 			now = datetime.datetime.now()
 			
 			f= open('output_raw/arp'+  '_' + d['name'] + '_' + str(now.hour) + '_' + str(now.minute) +'.txt',"w")
@@ -202,7 +205,7 @@ if __name__ == '__main__':
 				
 		if (d['vendor']=='nokia'):
 			
-			cmd_out = lib.run_cmd_telnet_nokia(d['ip'], g_user, g_pwd, 'show service service-using vprn', '#')
+			cmd_out = lib.run_cmd_nokia(d['ip'], g_user, g_pwd, 'show service service-using vprn', '#', dev_mode)
 			if(cmd_out==''):
 				print('no data')
 				sys.exit()
@@ -239,7 +242,7 @@ if __name__ == '__main__':
 
 		if (d['vendor']=='cisco' and '760' in d['model']):
 			
-			cmd_out = lib.run_cmd_telnet_cisco(d['ip'], g_user, g_pwd, 'show ip vrf interfaces')
+			cmd_out = lib.run_cmd_cisco(d['ip'], g_user, g_pwd, 'show ip vrf interfaces', dev_mode)
 			if(cmd_out==''):
 				print('no data')
 				sys.exit()

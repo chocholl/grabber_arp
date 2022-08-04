@@ -3,9 +3,10 @@
 1) Внести ip адрес и модель опрашиваемого оборудования в файл ip-list.txt
 
 bash-3.00$ more ./ip-list.txt
-ip;model;vendor;name
-10.231.0.99;mx480;juniper;66-NTGL-AGG010-PEAGG-1
-10.231.0.102;mx480;juniper;66-EKTB-BB01-BPE-3
+ip;model;vendor;name;mode
+10.231.0.99;mx480;juniper;66-NTGL-AGG010-PEAGG-1;ssh
+10.231.0.102;mx480;juniper;66-EKTB-BB01-BPE-3;ssh
+
 
 2) Перейти в рабочую директорию и запустить оболочку
 $ bash
